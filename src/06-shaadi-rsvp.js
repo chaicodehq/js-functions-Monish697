@@ -45,18 +45,58 @@
  *   handleRSVP({ name: "Amit", rsvp: "yes" }, g => `${g.name} is coming!`, g => `${g.name} declined`)
  *   // => "Amit is coming!"
  */
+
 export function processGuests(guests, filterFn) {
-  // Your code here
+    if (
+        !Array.isArray(guests) ||
+        guests.length === 0 ||
+        typeof filterFn !== "function"
+    ) {
+        return [];
+    }
+    let res = guests.filter((guest) => {
+        return filterFn(guest) === true;
+    });
+    return res;
 }
 
 export function notifyGuests(guests, notifyCallback) {
-  // Your code here
+    if (
+        !Array.isArray(guests) ||
+        guests.length === 0 ||
+        typeof notifyCallback !== "function"
+    ) {
+        return [];
+    }
+    let res = guests.map((guest) => {
+        let localRes = notifyCallback(guest);
+        return localRes;
+    });
+    return res;
 }
 
 export function handleRSVP(guest, onAccept, onDecline) {
-  // Your code here
+    if (
+        !guest ||
+        typeof onAccept !== "function" ||
+        typeof onDecline !== "function"
+    ) {
+        return null;
+    }
+    if (guest.rsvp === "yes" && typeof onAccept === "function") {
+        return onAccept(guest);
+    } else if (guest.rsvp === "no" && typeof onDecline === "function") {
+        return onDecline(guest);
+    } else {
+        return null;
+    }
 }
 
 export function transformGuestList(guests, ...transformFns) {
-  // Your code here
+    if (!Array.isArray(guests)) {
+        return [];
+    }
+    return transformFns.reduce((currentList, transformFn) => {
+        return transformFn(currentList);
+    }, guests);
 }

@@ -1,3 +1,5 @@
+import { run } from "jest";
+
 /**
  * 🏏 Cricket Player Stats Dashboard
  *
@@ -38,21 +40,71 @@
  *   // => { name: "Jadeja", strikeRate: 175, economy: 7.5, battingAvg: 28.57, isAllRounder: false }
  */
 export const calcStrikeRate = (runs, balls) => {
-  // Your code here
+    const calcStrikeRatefn = (runs, balls) => {
+        if (balls <= 0 || runs < 0) {
+            return 0;
+        }
+        let res = ((runs / balls) * 100).toFixed(2);
+        res = Number(res);
+
+        return res;
+    };
+    return calcStrikeRatefn(runs, balls);
 };
 
 export const calcEconomy = (runsConceded, overs) => {
-  // Your code here
+    const fn = (runsConceded, overs) => {
+        if (overs <= 0 || runsConceded < 0) {
+            return 0;
+        }
+        return runsConceded / overs;
+    };
+    return fn(runsConceded, overs);
 };
 
 export const calcBattingAvg = (totalRuns, innings, notOuts = 0) => {
-  // Your code here
+    const fn = (totalRuns, innings, notOuts) => {
+        if (!notOuts || notOuts == false) {
+            notOuts = 0;
+        }
+        let temp = innings - notOuts;
+        if (temp <= 0) {
+            return 0;
+        }
+        let BattingAvg = totalRuns / temp.toFixed(2);
+        return parseFloat(BattingAvg.toFixed(2));
+    };
+    return fn(totalRuns, innings, notOuts);
 };
 
 export const isAllRounder = (battingAvg, economy) => {
-  // Your code here
+    const fn = (battingAvg, economy) => {
+        if (battingAvg > 30 && economy < 8) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+    return fn(battingAvg, economy);
 };
 
 export const getPlayerCard = (player) => {
-  // Your code here
+    if (!player || typeof player === undefined || !player.name) {
+        return null;
+    }
+    const fn = (player) => {
+        return {
+            // - player object: { name, runs, balls, totalRuns, innings, notOuts, runsConceded, overs }
+            name: player.name,
+            strikeRate: calcStrikeRate(player.runs, player.balls),
+            economy: calcEconomy(player.runsConceded, player.overs),
+            battingAvg: calcBattingAvg(
+                player.totalRuns,
+                player.innings,
+                player.notOuts,
+            ),
+            isAllRounder: isAllRounder(player.battingAvg, player.economy),
+        };
+    };
+    return fn(player);
 };

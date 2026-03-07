@@ -53,29 +53,83 @@
  *   // => { name: "Haldi", form: "powder", packed: true, label: "Haldi Masala" }
  */
 export function pipe(...fns) {
-  // Your code here
+  if (!fns) {
+    return (x) => x;
+  }
+  return function (x) {
+    let funcs = [...fns];
+    let res = funcs.reduce((acc, curr) => {
+      acc = curr(acc);
+      return acc;
+    }, x);
+    return res;
+  };
 }
 
 export function compose(...fns) {
-  // Your code here
+  if (!fns) {
+    return (x) => x;
+  }
+  return function (x) {
+    let funcs = [...fns].reverse();
+    let res = funcs.reduce((acc, curr) => {
+      acc = curr(acc);
+      return acc;
+    }, x);
+    return res;
+  };
 }
 
 export function grind(spice) {
-  // Your code here
+  return { ...spice, form: "powder" };
 }
 
 export function roast(spice) {
-  // Your code here
+  return { ...spice, roasted: true, aroma: "strong" };
 }
 
 export function mix(spice) {
-  // Your code here
+  return { ...spice, mixed: true };
 }
 
 export function pack(spice) {
-  // Your code here
+  return { ...spice, packed: true, label: `${spice.name} Masala` };
 }
-
+/* *   7. createRecipe(steps)
+ *      - steps: array of step name strings, e.g., ["grind", "roast", "pack"]
+ *      - Maps step names to functions: "grind"=>grind, "roast"=>roast,
+ *        "mix"=>mix, "pack"=>pack
+ *      - Returns a piped function that applies steps in order
+ *      - Unknown step names are skipped
+ *      - Agar steps empty or not array, return identity function */
 export function createRecipe(steps) {
-  // Your code here
+  if (!Array.isArray(steps) || steps.length === 0) {
+    return (x) => x;
+  }
+
+  steps = steps.filter((nameOfFunc) => {
+    if (nameOfFunc === "grind") {
+      return grind;
+    } else if (nameOfFunc === "roast") {
+      return roast;
+    } else if (nameOfFunc === "mix") {
+      return mix;
+    } else if (nameOfFunc === "pack") {
+      return pack;
+    }
+  });
+
+  let res = steps.map((nameOfFunc) => {
+    if (nameOfFunc === "grind") {
+      return grind;
+    } else if (nameOfFunc === "roast") {
+      return roast;
+    } else if (nameOfFunc === "mix") {
+      return mix;
+    } else if (nameOfFunc === "pack") {
+      return pack;
+    }
+  });
+
+  return pipe(...res);
 }

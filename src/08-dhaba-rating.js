@@ -45,17 +45,64 @@
  *   // => [{ rating: 5 }, { rating: 3 }]
  */
 export function createFilter(field, operator, value) {
-  // Your code here
+  // *      - Operators: ">", "<", ">=", "<=", "==="
+  return function (obj) {
+    if (operator === ">") {
+      return Boolean(obj[field] > value);
+    } else if (operator === "<") {
+      return Boolean(obj[field] < value);
+    } else if (operator === ">=") {
+      return Boolean(obj[field] >= value);
+    } else if (operator === "<=") {
+      return Boolean(obj[field] <= value);
+    } else if (operator === "===") {
+      return Boolean(obj[field] === value);
+    } else {
+      return false;
+    }
+  };
 }
 
 export function createSorter(field, order = "asc") {
-  // Your code here
+  return (a, b) => {
+    let valA = a[field];
+    let valB = b[field];
+
+    if (typeof valA === "number" && typeof valB === "number") {
+      return order === "asc" ? valA - valB : valB - valA;
+    }
+
+    valA = String(valA);
+    valB = String(valB);
+
+    return order === "asc"
+      ? valA.localeCompare(valB)
+      : valB.localeCompare(valA);
+  };
 }
 
 export function createMapper(fields) {
-  // Your code here
+  return function (obj) {
+    let res = {};
+    for (const key in obj) {
+      if (fields.includes(key)) {
+        res[key] = obj[key];
+      }
+    }
+    return res;
+  };
 }
 
 export function applyOperations(data, ...operations) {
-  // Your code here
+  if (!Array.isArray(data)) {
+    return [];
+  }
+  let res;
+  for (let i = 0; i < operations.length; i++) {
+    res = operations[i];
+    let newData = res(data);
+    data = undefined;
+    data = newData;
+  }
+  return data;
 }

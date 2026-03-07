@@ -54,21 +54,74 @@
  *   // red and blue objects are UNCHANGED
  */
 export function mixColors(color1, color2) {
-  // Your code here
+  if (!color1 || !color2) {
+    return null;
+  }
+
+  let newRes = { name: `${color1.name}-${color2.name}` };
+  newRes["r"] = Math.round((color1.r + color2.r) / 2);
+  newRes["g"] = Math.round(color1.g + color2.g / 2);
+  newRes["b"] = Math.round(color1.b + color2.b / 2);
+  return newRes;
 }
 
 export function adjustBrightness(color, factor) {
-  // Your code here
+  if (!color || typeof factor !== "number") {
+    return null;
+  }
+
+  let newColor = { ...color };
+  function addFactorToColor(colorVal) {
+    let res = Math.round(colorVal * factor);
+
+    if (res >= 0 && res <= 255) {
+      return res;
+    } else {
+      return 255;
+    }
+  }
+  let res = {
+    name: newColor.name,
+    r: addFactorToColor(newColor.r),
+    g: addFactorToColor(newColor.g),
+    b: addFactorToColor(newColor.b),
+  };
+
+  return res;
 }
 
 export function addToPalette(palette, color) {
-  // Your code here
+  if (!Array.isArray(palette)) {
+    return [color];
+  }
+  let newArr = [...palette];
+  if (!color) {
+    return newArr;
+  }
+  let res = [...palette, color];
+  return res;
 }
 
 export function removeFromPalette(palette, colorName) {
-  // Your code here
+  if (!Array.isArray(palette)) {
+    return [];
+  }
+  let copy = [...palette];
+  let res = copy.filter((color) => {
+    return color.name !== colorName;
+  });
+  return res;
 }
 
 export function mergePalettes(palette1, palette2) {
-  // Your code here
+  let newPalette1 = !palette1 ? [] : [...palette1];
+  let newPalette2 = !palette2 ? [] : [...palette2];
+
+  let temp = [...newPalette1, ...newPalette2];
+
+  let res = temp.filter((item, index, self) => {
+    return index === self.findIndex((t) => t.name === item.name);
+  });
+
+  return res;
 }
