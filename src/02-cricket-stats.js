@@ -1,5 +1,3 @@
-import { run } from "jest";
-
 /**
  * 🏏 Cricket Player Stats Dashboard
  *
